@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <com.rhino.wheel.WheelView
+        android:id="@+id/WheelView1"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:item_cyclic_enable="true"
+        app:item_height="40dp"
+        app:item_min_alpha_value="0.1"
+        app:item_select_line_color="#88000000"
+        app:item_select_line_enable="true"
+        app:item_select_line_length_scale="0.3"
+        app:item_text_color="#ff000000"
+        app:item_text_size="20sp"
+        app:item_visible_count="7"
+        app:orientation="horizontal" />
+
+    <com.rhino.wheel.WheelView
+        android:id="@+id/WheelView2"
+        android:layout_width="100dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="20dp"
+        app:item_cyclic_enable="false"
+        app:item_height="40dp"
+        app:item_min_alpha_value="0.5"
+        app:item_select_line_color="#88000000"
+        app:item_select_line_enable="true"
+        app:item_select_line_length_scale="0.8"
+        app:item_text_color="#ff000000"
+        app:item_text_size="20sp"
+        app:item_visible_count="5"
+        app:orientation="vertical" />
+
+</LinearLayout>

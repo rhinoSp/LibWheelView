@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="orientation" format="enum">
+        <enum name="horizontal" value="0" />
+        <enum name="vertical" value="1" />
+    </attr>
+    <attr name="item_height" format="dimension" />
+    <attr name="item_min_alpha_value" format="float" />
+    <attr name="item_text_size" format="dimension" />
+    <attr name="item_text_color" format="color" />
+    <attr name="item_select_line_enable" format="boolean" />
+    <attr name="item_select_line_length_scale" format="float" />
+    <attr name="item_select_line_width" format="dimension" />
+    <attr name="item_select_line_color" format="color" />
+    <attr name="item_line_length_scale" format="float" />
+    <attr name="item_cyclic_enable" format="boolean" />
+    <attr name="item_visible_count" format="integer" />
+
+    <declare-styleable name="WheelView">
+        <attr name="orientation" />
+        <attr name="item_height" />
+        <attr name="item_min_alpha_value" />
+        <attr name="item_text_size" />
+        <attr name="item_text_color" />
+        <attr name="item_select_line_enable" />
+        <attr name="item_select_line_length_scale" />
+        <attr name="item_select_line_width" />
+        <attr name="item_select_line_color" />
+        <attr name="item_cyclic_enable" />
+        <attr name="item_visible_count" />
+    </declare-styleable>
+
+</resources>
+
