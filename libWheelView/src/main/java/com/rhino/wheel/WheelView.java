@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.FontMetricsInt;
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -168,7 +169,7 @@ public class WheelView extends View {
                 float currentMoveY = event.getY();
                 if (mScrollState != OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                     int deltaDown;
-                    if (isVerticalWheel()) {
+                    if (mOrientation == VERTICAL) {
                         deltaDown = (int) Math.abs(currentMoveY - mLastDownEventY);
                     } else {
                         deltaDown = (int) Math.abs(currentMoveX - mLastDownEventX);
@@ -190,7 +191,7 @@ public class WheelView extends View {
             case MotionEvent.ACTION_UP:
                 VelocityTracker velocityTracker = mVelocityTracker;
                 velocityTracker.computeCurrentVelocity(1000, mMaximumFlingVelocity);
-                int initialVelocity = isVerticalWheel() ? (int) velocityTracker.getYVelocity() : (int) velocityTracker.getXVelocity();
+                int initialVelocity = mOrientation == VERTICAL ? (int) velocityTracker.getYVelocity() : (int) velocityTracker.getXVelocity();
                 if (Math.abs(initialVelocity) > mMinimumFlingVelocity) {
                     fling(initialVelocity);
                     onScrollStateChange(OnScrollListener.SCROLL_STATE_FLING);
@@ -236,7 +237,7 @@ public class WheelView extends View {
 
     @Override
     public void scrollBy(int x, int y) {
-        int space = isVerticalWheel() ? y : x;
+        int space = mOrientation == VERTICAL ? y : x;
         int[] selectorIndices = mSelectorIndices;
         if (space > 0 && isDecrementToEnd()) {
             return;
@@ -274,7 +275,7 @@ public class WheelView extends View {
         }
         scroller.computeScrollOffset();
 
-        if (isVerticalWheel()) {
+        if (mOrientation == VERTICAL) {
             int currentScrollerY = scroller.getCurrY();
             if (mLastScrollerY == 0) {
                 mLastScrollerY = scroller.getStartY();
@@ -299,7 +300,7 @@ public class WheelView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (isVerticalWheel()) {
+        if (mOrientation == VERTICAL) {
             drawVertical(canvas);
         } else {
             drawHorizontal(canvas);
@@ -350,7 +351,7 @@ public class WheelView extends View {
         mHalfWidth = mViewWidth / 2;
 
         initializeSelectorWheel();
-        if (isVerticalWheel()) {
+        if (mOrientation == VERTICAL) {
             initVerticalItems();
             int itemLineWidth = mViewWidth;
             if (mItemSelectLineLengthScale >= 0f && mItemSelectLineLengthScale <= 1f) {
@@ -374,7 +375,6 @@ public class WheelView extends View {
     }
 
     private void initVerticalItems() {
-        ItemRect itemRect = null;
         int halfItemViewWidth = mViewWidth / 2;
         int centerYCoor = mViewHeight / 2;
         final int itemCount = mItemVisibleCount;
@@ -382,49 +382,53 @@ public class WheelView extends View {
         mOffsetTotalHeight = (mViewHeight - mTotalHeight) / 2;
 
         for (int i = 0; i < mItemPostions.length; i++) {
-            itemRect = new VerticalItemRect(i);
+            ItemRect itemRect = new VerticalItemRect(i);
             itemRect.updateCenterCoorY(centerYCoor + (i - itemCount / 2) * mSelectorElementSize);
             itemRect.updateCenterCoorX(halfItemViewWidth);
             mItemPostions[i] = itemRect;
         }
 
         if (null != mItemsDrawContents) {
-            mItemTextSize = (int) (mSelectorElementSize * SF_ITEMTXT_MAX_SCALE_TO_HEIGHT);
             String maxWidthString = getMaxWidthString(mItemsDrawContents);
-            int txtMeasureSize = measureTextSize((int) (SF_ITEMTXT_MAX_SCALE_TO_WIDTH * mViewWidth), maxWidthString);
-            if (mItemTextSize > txtMeasureSize) {
+            float fac = mItemPostions[mItemVisibleCount / 2].getFac(0);
+            int txtMeasureSize = measureTextSize((int) (fac * mViewWidth), maxWidthString);
+            if (txtMeasureSize < mItemTextSize) {
                 mItemTextSize = txtMeasureSize;
             }
-        }
-    }
-
-    private void initHorizontalItems() {
-        ItemRect itemRect = null;
-        int halfItemViewWidth = mSelectorElementSize / 2;
-        for (int i = 0; i < mItemPostions.length; i++) {
-            itemRect = new HorizontalItemRect(mSelectorElementSize);
-            itemRect.updateCenterCoorY(mViewHeight / 2);
-            itemRect.updateCenterCoorX(halfItemViewWidth + mSelectorElementSize * i);
-            mItemPostions[i] = itemRect;
-        }
-
-        if (null != mItemsDrawContents) {
-            String txt = getMaxWidthString(mItemsDrawContents);
-            if (!TextUtils.isEmpty(txt)) {
-                float fac = mItemPostions[mItemVisibleCount / 2].getFac(0);
-                int txtMeasureSize = measureTextSize((int) (fac * mSelectorElementSize), txt);
-                int maxTextSize = (int) (mViewHeight * 0.68f);
-                if (txtMeasureSize < mItemTextSize) {
-                    mItemTextSize = txtMeasureSize;
-                }
-                if (mItemTextSize > maxTextSize) {
+            if (mItemSelectLineEnable) {
+                int maxTextSize = measureTextSize((int) (mViewWidth * mItemSelectLineLengthScale), maxWidthString);
+                if (maxTextSize < mItemTextSize) {
                     mItemTextSize = maxTextSize;
                 }
             }
         }
     }
 
+    private void initHorizontalItems() {
+        int halfItemViewWidth = mSelectorElementSize / 2;
+        for (int i = 0; i < mItemPostions.length; i++) {
+            ItemRect itemRect = new HorizontalItemRect(mSelectorElementSize);
+            itemRect.updateCenterCoorY(mViewHeight / 2);
+            itemRect.updateCenterCoorX(halfItemViewWidth + mSelectorElementSize * i);
+            mItemPostions[i] = itemRect;
+        }
 
+        if (null != mItemsDrawContents) {
+            String maxWidthString = getMaxWidthString(mItemsDrawContents);
+            float fac = mItemPostions[mItemVisibleCount / 2].getFac(0);
+            int txtMeasureSize = measureTextSize((int) (fac * mSelectorElementSize), maxWidthString);
+            if (txtMeasureSize < mItemTextSize) {
+                mItemTextSize = txtMeasureSize;
+            }
+            if (mItemSelectLineEnable) {
+                int maxTextSize = (int) (mViewHeight * (0.5 - mItemSelectLineLengthScale));
+                if (maxTextSize < mItemTextSize) {
+                    mItemTextSize = maxTextSize;
+                }
+            }
+        }
+    }
+    
     private void drawHorizontal(Canvas canvas) {
         int color = mItemTextColor;
         int offset = mCurrentScrollOffset;
@@ -449,14 +453,13 @@ public class WheelView extends View {
                 mPaint.setAlpha(alpha);
                 canvas.drawText(txt, x, baseline, mPaint);
             }
-
-            if (mItemSelectLineEnable && i == mItemVisibleCount / 2) {
-                mPaint.setColor(mItemSelectLineColor);
-                canvas.drawLine(mItemSelectLineRect.centerX(), mItemSelectLineRect.centerY() - mItemSelectLineRect.top,
-                        mItemSelectLineRect.centerX(), mItemSelectLineRect.top, mPaint);
-                canvas.drawLine(mItemSelectLineRect.centerX(), mItemSelectLineRect.centerY() + mItemSelectLineRect.top,
-                        mItemSelectLineRect.centerX(), mItemSelectLineRect.bottom, mPaint);
-            }
+        }
+        if (mItemSelectLineEnable) {
+            mPaint.setColor(mItemSelectLineColor);
+            canvas.drawLine(mItemSelectLineRect.centerX(), mItemSelectLineRect.centerY() - mItemSelectLineRect.top,
+                    mItemSelectLineRect.centerX(), mItemSelectLineRect.top, mPaint);
+            canvas.drawLine(mItemSelectLineRect.centerX(), mItemSelectLineRect.centerY() + mItemSelectLineRect.top,
+                    mItemSelectLineRect.centerX(), mItemSelectLineRect.bottom, mPaint);
         }
     }
 
@@ -494,20 +497,6 @@ public class WheelView extends View {
         }
     }
 
-    public void scrollChangeValue(int value) {
-        if (null != mVelocityTracker) {
-            // 如果正在滑动控制  那么不响应设置
-            return;
-        }
-        if (mViewWidth == 0) {
-            setValueInternal(value, false);
-        } else if (getScrollState() == OnScrollListener.SCROLL_STATE_IDLE) {
-            if (mAdjustScroller.isFinished()) {
-                changeValueByValue(value, 0);
-            }
-        }
-    }
-
     public void setValue(int value) {
         setValueInternal(value, false);
     }
@@ -520,9 +509,6 @@ public class WheelView extends View {
         mOnScrollListener = onScrollListener;
     }
 
-    public boolean isVerticalWheel() {
-        return mOrientation == VERTICAL;
-    }
 
     public void setEnableItemOffset(boolean itemScale) {
         mWheelEnableScrollOffset = itemScale;
@@ -615,6 +601,7 @@ public class WheelView extends View {
         invalidate();
     }
 
+    @NonNull
     private String getMaxWidthString(String[] arrs) {
         String txt;
         Paint paint = new Paint();
@@ -664,7 +651,7 @@ public class WheelView extends View {
         mLastScrollerX = 0;
         mLastScrollerY = 0;
 
-        if (isVerticalWheel()) {
+        if (mOrientation == VERTICAL) {
             if (velocity > 0) {
                 mFlingScroller.fling(0, 0, 0, velocity, 0, 0, 0, Integer.MAX_VALUE);
             } else {
@@ -697,7 +684,7 @@ public class WheelView extends View {
             if (Math.abs(delta) > mSelectorElementSize / 2) {
                 delta += (delta > 0) ? -mSelectorElementSize : mSelectorElementSize;
             }
-            if (isVerticalWheel()) {
+            if (mOrientation == VERTICAL) {
                 mAdjustScroller.startScroll(0, 0, 0, delta, SELECTOR_ADJUSTMENT_DURATION_MILLIS);
             } else {
                 mAdjustScroller.startScroll(0, 0, delta, 0, SELECTOR_ADJUSTMENT_DURATION_MILLIS);
@@ -745,7 +732,7 @@ public class WheelView extends View {
     }
 
     private int getSelectorElementSize() {
-        if (isVerticalWheel()) {
+        if (mOrientation == VERTICAL) {
             return mItemHeight;
         } else {
             return mViewWidth / mItemVisibleCount;
@@ -861,7 +848,7 @@ public class WheelView extends View {
             scrollValue = mSelectorElementSize * dv * (-1) - litOffset;
         }
 
-        if (isVerticalWheel()) {
+        if (mOrientation == VERTICAL) {
             mFlingScroller.startScroll(0, 0, 0, scrollValue, DEFAULT_SCROLL_DURATION);
         } else {
             mFlingScroller.startScroll(0, 0, scrollValue, 0, DEFAULT_SCROLL_DURATION);
@@ -875,7 +862,7 @@ public class WheelView extends View {
     private boolean moveToFinalScrollerPosition(OverScroller scroller) {
         scroller.forceFinished(true);
         int amountToScroll;
-        if (isVerticalWheel()) {
+        if (mOrientation == VERTICAL) {
             amountToScroll = scroller.getFinalY() - scroller.getCurrY();
         } else {
             amountToScroll = scroller.getFinalX() - scroller.getCurrX();
@@ -893,7 +880,7 @@ public class WheelView extends View {
             }
             amountToScroll += overshootAdjustment;
 
-            if (isVerticalWheel()) {
+            if (mOrientation == VERTICAL) {
                 scrollBy(0, amountToScroll);
             } else {
                 scrollBy(amountToScroll, 0);
