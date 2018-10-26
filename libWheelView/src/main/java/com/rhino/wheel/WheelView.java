@@ -34,7 +34,7 @@ public class WheelView extends View {
 
     private static final int SELECTOR_ADJUSTMENT_DURATION_MILLIS = 800;
     private static final int SELECTOR_MAX_FLING_VELOCITY_ADJUSTMENT = 2;
-    private static final int DEFAULT_ITEM_HEIGHT = 40;
+    private static final int DEFAULT_ITEM_VERTICAL_HEIGHT = 40;
     private static final float DEFAULT_ITEM_MIN_ALPHA = 0.1f;
     private static final int DEFAULT_ITEM_TEXT_SIZE = 30;
     private static final int DEFAULT_ITEM_TEXT_COLOR = Color.BLACK;
@@ -44,7 +44,7 @@ public class WheelView extends View {
     private static final boolean DEFAULT_ITEM_CYCLIC_ENABLE = true;
     private static final boolean DEFAULT_ITEM_SELECT_LINE_ENABLE = true;
     private static final int DEFAULT_ITEM_VISIBLE_COUNT = 7;
-    private int mItemHeight;
+    private int mItemVerticalHeight;
     private float mItemMinAlpha;
     private int mItemTextSize;
     private int mItemTextColor;
@@ -283,7 +283,7 @@ public class WheelView extends View {
         if (null != attrs) {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.WheelView);
             mOrientation = a.getInt(R.styleable.WheelView_orientation, HORIZONTAL);
-            mItemHeight = a.getDimensionPixelSize(R.styleable.WheelView_item_height, DEFAULT_ITEM_HEIGHT);
+            mItemVerticalHeight = a.getDimensionPixelSize(R.styleable.WheelView_item_vertical_height, DEFAULT_ITEM_VERTICAL_HEIGHT);
             mItemMinAlpha = a.getFloat(R.styleable.WheelView_item_min_alpha_value, DEFAULT_ITEM_MIN_ALPHA);
             mItemTextSize = a.getDimensionPixelSize(R.styleable.WheelView_item_text_size, DEFAULT_ITEM_TEXT_SIZE);
             mItemTextColor = a.getColor(R.styleable.WheelView_item_text_color, DEFAULT_ITEM_TEXT_COLOR);
@@ -350,7 +350,7 @@ public class WheelView extends View {
         int halfItemViewWidth = mViewWidth / 2;
         int centerYCoor = mViewHeight / 2;
         final int itemCount = mItemVisibleCount;
-        mTotalHeight = mItemHeight * mItemVisibleCount;
+        mTotalHeight = mItemVerticalHeight * mItemVisibleCount;
         mOffsetTotalHeight = (mViewHeight - mTotalHeight) / 2;
 
         for (int i = 0; i < mItemPostions.length; i++) {
@@ -599,7 +599,7 @@ public class WheelView extends View {
 
     private int getSelectorElementSize() {
         if (mOrientation == VERTICAL) {
-            return mItemHeight;
+            return mItemVerticalHeight;
         } else {
             return mViewWidth / mItemVisibleCount;
         }
@@ -972,6 +972,14 @@ public class WheelView extends View {
 
     public void setDisplayedValues(String[] displayedValues) {
         mItemsDrawContents = displayedValues;
+        if (displayedValues != null) {
+            if (mItemVisibleCount > displayedValues.length) {
+                setItemVisibleCount(displayedValues.length);
+            }
+            setMinValue(0);
+            setMaxValue(displayedValues.length-1);
+            initViewSize(mViewWidth, mViewHeight);
+        }
         initializeSelectorWheelIndices();
     }
 

@@ -21,8 +21,6 @@ public class MainActivity extends AppCompatActivity {
                 "晴", "阴", "多云", "小雨", "中雨", "大雨", "暴雨", "冻雨"
         };
         mWheelView1 = findViewById(R.id.WheelView1);
-        mWheelView1.setMinValue(0);
-        mWheelView1.setMaxValue(displayedValues1.length - 1);
         mWheelView1.setDisplayedValues(displayedValues1);
         mWheelView1.setOnValueChangedListener(new WheelView.OnValueChangeListener() {
             @Override
@@ -56,11 +54,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         String[] displayedValues2 = new String[]{
-                "晴晴晴晴晴晴晴", "阴", "多云", "小雨", "中雨", "大雨", "暴雨", "冻雨"
+                "晴晴晴晴晴晴晴", "阴", "多云", "小雨", "中雨", "大雨", "暴雨", "冻雨", "大雨", "暴雨", "冻雨", "大雨", "暴雨", "冻雨", "大雨", "暴雨", "冻雨"
         };
         mWheelView2 = findViewById(R.id.WheelView2);
-        mWheelView2.setMinValue(0);
-        mWheelView2.setMaxValue(displayedValues2.length - 1);
         mWheelView2.setDisplayedValues(displayedValues2);
         mWheelView2.setOnValueChangedListener(new WheelView.OnValueChangeListener() {
             @Override
@@ -97,7 +93,10 @@ public class MainActivity extends AppCompatActivity {
         int id = view.getId();
         switch (id) {
             case R.id.change:
-                mWheelView2.setDisplayedValues(null);
+                String[] displayedValues2 = new String[]{
+                        "5分", "10分", "30分", "1小时", "2小时"
+                };
+                mWheelView2.setDisplayedValues(displayedValues2);
                 mWheelView2.invalidate();
                 break;
             default:
