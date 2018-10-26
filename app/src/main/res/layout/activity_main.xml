@@ -12,13 +12,14 @@
         android:id="@+id/WheelView1"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        app:item_cyclic_enable="true"
         android:background="#1a000000"
+        app:item_cyclic_enable="true"
         app:item_height="40dp"
         app:item_min_alpha_value="0.1"
         app:item_select_line_color="#88000000"
         app:item_select_line_enable="true"
         app:item_select_line_length_scale="0.3"
+        app:item_select_line_width="1dp"
         app:item_text_color="#ff000000"
         app:item_text_size="40sp"
         app:item_visible_count="7"
@@ -32,13 +33,22 @@
         android:background="#1a000000"
         app:item_cyclic_enable="false"
         app:item_height="40dp"
-        app:item_min_alpha_value="0.5"
+        app:item_min_alpha_value="0.1"
         app:item_select_line_color="#88000000"
-        app:item_select_line_enable="false"
+        app:item_select_line_enable="true"
         app:item_select_line_length_scale="0.8"
+        app:item_select_line_width="1dp"
         app:item_text_color="#ff000000"
         app:item_text_size="20sp"
         app:item_visible_count="5"
         app:orientation="vertical" />
+
+    <Button
+        android:id="@+id/change"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:onClick="onViewClick"
+        android:text="change" />
 
 </LinearLayout>

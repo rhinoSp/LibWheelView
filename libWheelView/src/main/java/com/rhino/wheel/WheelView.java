@@ -32,7 +32,6 @@ public class WheelView extends View {
     private static final int VERTICAL = 1;
     private int mOrientation;
 
-    private static final int DEFAULT_SCROLL_DURATION = 300;
     private static final int SELECTOR_ADJUSTMENT_DURATION_MILLIS = 800;
     private static final int SELECTOR_MAX_FLING_VELOCITY_ADJUSTMENT = 2;
     private static final int DEFAULT_ITEM_HEIGHT = 40;
@@ -55,7 +54,6 @@ public class WheelView extends View {
     private boolean mItemCyclicEnable;
     private boolean mItemSelectLineEnable;
     private int mItemVisibleCount;
-
 
     private int mViewWidth;
     private int mViewHeight;
@@ -83,11 +81,8 @@ public class WheelView extends View {
     private int mLastScrollerY;
     private int mScrollState;
     private OnValueChangeListener mOnValueChangeListener;
+    private OnValueChangeFinishListener changeFinishListener;
     private OnScrollListener mOnScrollListener;
-
-
-    private static final float SF_ITEMTXT_MAX_SCALE_TO_WIDTH = 0.85F;
-    private static final float SF_ITEMTXT_MAX_SCALE_TO_HEIGHT = 0.76F;
 
     private int mTouchSlop;
     private int mMinimumFlingVelocity;
@@ -149,7 +144,6 @@ public class WheelView extends View {
         }
         mVelocityTracker.addMovement(event);
         int action = event.getAction() & MotionEvent.ACTION_MASK;
-
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 mLastDownEventX = event.getX();
@@ -199,27 +193,6 @@ public class WheelView extends View {
                     int eventX = (int) event.getX();
                     int deltaMoveX = (int) Math.abs(eventX - mLastDownEventX);
                     if (deltaMoveX <= mTouchSlop) {
-                	/*int selectorIndexOffset = (eventX / mSelectorElementWidth)
-                            - SELECTOR_MIDDLE_ITEM_INDEX;
-                    int changeValue = mValue;
-                	if (selectorIndexOffset > 0) {
-                		if (changeValue == mMaxValue) {
-                			if (mItemCyclicEnable) {
-                				changeValue = mMinValue;
-                			}
-                		} else {
-                			changeValue++;
-                		}
-                    } else if (selectorIndexOffset < 0) {
-                    	if (changeValue == mMinValue) {
-                			if (mItemCyclicEnable) {
-                				changeValue = mMaxValue;
-                			}
-                		} else {
-                			changeValue--;
-                		}
-                    }
-                    changeValueByValue(changeValue, 0);*/
                         ensureScrollWheelAdjusted();
                     } else {
                         ensureScrollWheelAdjusted();
@@ -274,7 +247,6 @@ public class WheelView extends View {
             }
         }
         scroller.computeScrollOffset();
-
         if (mOrientation == VERTICAL) {
             int currentScrollerY = scroller.getCurrY();
             if (mLastScrollerY == 0) {
@@ -428,7 +400,7 @@ public class WheelView extends View {
             }
         }
     }
-    
+
     private void drawHorizontal(Canvas canvas) {
         int color = mItemTextColor;
         int offset = mCurrentScrollOffset;
@@ -495,110 +467,6 @@ public class WheelView extends View {
             canvas.drawLine(mItemSelectLineRect.left, mItemSelectLineRect.top, mItemSelectLineRect.right, mItemSelectLineRect.top, mPaint);
             canvas.drawLine(mItemSelectLineRect.left, mItemSelectLineRect.bottom, mItemSelectLineRect.right, mItemSelectLineRect.bottom, mPaint);
         }
-    }
-
-    public void setValue(int value) {
-        setValueInternal(value, false);
-    }
-
-    public void setOnValueChangedListener(OnValueChangeListener onValueChangedListener) {
-        mOnValueChangeListener = onValueChangedListener;
-    }
-
-    public void setOnScrollListener(OnScrollListener onScrollListener) {
-        mOnScrollListener = onScrollListener;
-    }
-
-
-    public void setEnableItemOffset(boolean itemScale) {
-        mWheelEnableScrollOffset = itemScale;
-    }
-
-    public void setOrientation(int orientation) {
-        this.mOrientation = orientation;
-    }
-
-    public void setItemTextSize(int textSize) {
-        this.mItemTextSize = textSize;
-    }
-
-    public void setItemTextColor(int color) {
-        this.mItemTextColor = color;
-    }
-
-    public void setItemMinAlpha(float alpha) {
-        this.mItemMinAlpha = alpha;
-    }
-
-    public void setItemVisibleCount(int count) {
-        mItemVisibleCount = (count <= 2 ? DEFAULT_ITEM_VISIBLE_COUNT : count);
-        mItemPostions = new ItemRect[mItemVisibleCount];
-        mSelectorIndices = new int[mItemVisibleCount];
-    }
-
-    public int getItemVisibleCount() {
-        return mItemVisibleCount;
-    }
-
-    public void setItemSelectLineEnable(boolean show) {
-        this.mItemSelectLineEnable = show;
-    }
-
-    public void setItemCyclicEnable(boolean wrapSelectorWheel) {
-        mItemCyclicEnable = wrapSelectorWheel;
-        final boolean wrappingAllowed = (mMaxValue - mMinValue) >= mSelectorIndices.length;
-        if ((!wrapSelectorWheel || wrappingAllowed) && wrapSelectorWheel != mItemCyclicEnable) {
-            mItemCyclicEnable = wrapSelectorWheel;
-        }
-    }
-
-    public boolean isItemCyclicEnable() {
-        return mItemCyclicEnable;
-    }
-
-    public int getScrollState() {
-        return mScrollState;
-    }
-
-    public int getValue() {
-        return mValue;
-    }
-
-    public void setDisplayedValues(String[] displayedValues) {
-        mItemsDrawContents = displayedValues;
-        initializeSelectorWheelIndices();
-    }
-
-
-    public void setMinValue(int minValue) {
-        if (mMinValue == minValue) {
-            return;
-        }
-        if (minValue < 0) {
-            throw new IllegalArgumentException("minValue must be >= 0");
-        }
-        mMinValue = minValue;
-        if (mMinValue > mValue) {
-            mValue = mMinValue;
-        }
-        initializeSelectorWheelIndices();
-        invalidate();
-    }
-
-
-    public void setMaxValue(int maxValue) {
-        if (mMaxValue == maxValue) {
-            return;
-        }
-        if (maxValue < 0) {
-            throw new IllegalArgumentException("maxValue must be >= 0");
-        }
-        mMaxValue = maxValue;
-        if (mMaxValue < mValue) {
-            mValue = mMaxValue;
-        }
-        initializeSelectorWheelIndices();
-        invalidate();
     }
 
     @NonNull
@@ -670,8 +538,6 @@ public class WheelView extends View {
     }
 
     private boolean ensureScrollWheelAdjusted() {
-        // adjust to the closest value
-
         if (null != changeFinishListener && !mHandleScrollChange) {
             changeFinishListener.onValueChange(this, mValue);
         }
@@ -830,66 +696,6 @@ public class WheelView extends View {
         cache.put(selectorIndex, scrollSelectorValue);
     }
 
-
-    private void changeValueByValue(int changeValue, int litOffset) {
-        if (!moveToFinalScrollerPosition(mFlingScroller)) {
-            moveToFinalScrollerPosition(mAdjustScroller);
-        }
-        mLastScrollerX = 0;
-        mLastScrollerY = 0;
-
-        int scrollValue, dv;
-        dv = changeValue - mValue;
-        if (dv == 0) {
-            return;
-        } else if (dv < 0) {
-            scrollValue = mSelectorElementSize * dv * (-1) + litOffset;
-        } else {
-            scrollValue = mSelectorElementSize * dv * (-1) - litOffset;
-        }
-
-        if (mOrientation == VERTICAL) {
-            mFlingScroller.startScroll(0, 0, 0, scrollValue, DEFAULT_SCROLL_DURATION);
-        } else {
-            mFlingScroller.startScroll(0, 0, scrollValue, 0, DEFAULT_SCROLL_DURATION);
-        }
-
-        mHandleScrollChange = true;
-
-        invalidate();
-    }
-
-    private boolean moveToFinalScrollerPosition(OverScroller scroller) {
-        scroller.forceFinished(true);
-        int amountToScroll;
-        if (mOrientation == VERTICAL) {
-            amountToScroll = scroller.getFinalY() - scroller.getCurrY();
-        } else {
-            amountToScroll = scroller.getFinalX() - scroller.getCurrX();
-        }
-
-        int futureScrollOffset = (mCurrentScrollOffset + amountToScroll) % mSelectorElementSize;
-        int overshootAdjustment = mInitialScrollOffset - futureScrollOffset;
-        if (overshootAdjustment != 0) {
-            if (Math.abs(overshootAdjustment) > mSelectorElementSize / 2) {
-                if (overshootAdjustment > 0) {
-                    overshootAdjustment -= mSelectorElementSize;
-                } else {
-                    overshootAdjustment += mSelectorElementSize;
-                }
-            }
-            amountToScroll += overshootAdjustment;
-
-            if (mOrientation == VERTICAL) {
-                scrollBy(0, amountToScroll);
-            } else {
-                scrollBy(amountToScroll, 0);
-            }
-            return true;
-        }
-        return false;
-    }
-
     public interface ItemRect {
         void updateCenterCoorX(int x);
 
@@ -911,9 +717,9 @@ public class WheelView extends View {
     }
 
     private class VerticalItemRect implements ItemRect {
-        int mPosition;
-        int mx;
-        int my;
+        private int mItemCenterCoorX;
+        private int mItemCenterCoorY;
+        private int mPosition;
 
         public VerticalItemRect(int position) {
             this.mPosition = position;
@@ -921,32 +727,32 @@ public class WheelView extends View {
 
         @Override
         public void updateCenterCoorX(int x) {
-            mx = x;
+            mItemCenterCoorX = x;
         }
 
         @Override
         public void updateCenterCoorY(int y) {
-            my = y;
+            mItemCenterCoorY = y;
         }
 
         @Override
         public int getRealX() {
-            return mx;
+            return mItemCenterCoorX;
         }
 
         @Override
         public int getDrawX(int offset) {
-            return mx;
+            return mItemCenterCoorX;
         }
 
         @Override
         public int getRealY() {
-            return my;
+            return mItemCenterCoorY;
         }
 
         @Override
         public int getDrawY(int offset) {
-            int cy = offset + my;
+            int cy = offset + mItemCenterCoorY;
             if (cy > (mViewHeight / 2)) {
                 return (int) (mViewHeight - (mViewHeight - cy) * getFac(offset));
             } else {
@@ -975,7 +781,7 @@ public class WheelView extends View {
 
         private float getFac_(int offset) {
             float fac;
-            int cy = my + offset - mOffsetTotalHeight;
+            int cy = mItemCenterCoorY + offset - mOffsetTotalHeight;
             int halfHeight = mTotalHeight / 2;
             if (cy > halfHeight) {
                 fac = (mTotalHeight - cy) / (mTotalHeight * 0.5f);
@@ -991,7 +797,6 @@ public class WheelView extends View {
 
         private int mItemCenterCoorX;
         private int mItemCenterCoorY;
-
         private int mItemSize;
 
         public HorizontalItemRect(int itemSize) {
@@ -1065,12 +870,6 @@ public class WheelView extends View {
         }
     }
 
-    private OnValueChangeFinishListener changeFinishListener;
-
-    public void setOnValueChangeFinishListener(OnValueChangeFinishListener listener) {
-        this.changeFinishListener = listener;
-    }
-
     public interface OnValueChangeListener {
         void onValueChange(WheelView picker, int oldVal, int newVal);
     }
@@ -1080,10 +879,112 @@ public class WheelView extends View {
     }
 
     public interface OnScrollListener {
-        public static int SCROLL_STATE_IDLE = 0;
-        public static int SCROLL_STATE_TOUCH_SCROLL = 1;
-        public static int SCROLL_STATE_FLING = 2;
+        int SCROLL_STATE_IDLE = 0;
+        int SCROLL_STATE_TOUCH_SCROLL = 1;
+        int SCROLL_STATE_FLING = 2;
 
-        public void onScrollStateChange(WheelView view, int scrollState);
+        void onScrollStateChange(WheelView view, int scrollState);
     }
+
+    public void setMinValue(int minValue) {
+        if (mMinValue == minValue) {
+            return;
+        }
+        if (minValue < 0) {
+            throw new IllegalArgumentException("minValue must be >= 0");
+        }
+        mMinValue = minValue;
+        if (mMinValue > mValue) {
+            mValue = mMinValue;
+        }
+        initializeSelectorWheelIndices();
+        invalidate();
+    }
+
+    public void setMaxValue(int maxValue) {
+        if (mMaxValue == maxValue) {
+            return;
+        }
+        if (maxValue < 0) {
+            throw new IllegalArgumentException("maxValue must be >= 0");
+        }
+        mMaxValue = maxValue;
+        if (mMaxValue < mValue) {
+            mValue = mMaxValue;
+        }
+        initializeSelectorWheelIndices();
+        invalidate();
+    }
+
+    public void setValue(int value) {
+        setValueInternal(value, false);
+    }
+
+    public int getValue() {
+        return mValue;
+    }
+
+    public void setOrientation(int orientation) {
+        this.mOrientation = orientation;
+    }
+
+    public void setEnableItemOffset(boolean itemScale) {
+        mWheelEnableScrollOffset = itemScale;
+    }
+
+    public void setItemTextSize(int textSize) {
+        this.mItemTextSize = textSize;
+    }
+
+    public void setItemTextColor(int color) {
+        this.mItemTextColor = color;
+    }
+
+    public void setItemMinAlpha(float alpha) {
+        this.mItemMinAlpha = alpha;
+    }
+
+    public void setItemVisibleCount(int count) {
+        mItemVisibleCount = (count <= 2 ? DEFAULT_ITEM_VISIBLE_COUNT : count);
+        mItemPostions = new ItemRect[mItemVisibleCount];
+        mSelectorIndices = new int[mItemVisibleCount];
+    }
+
+    public int getItemVisibleCount() {
+        return mItemVisibleCount;
+    }
+
+    public void setItemSelectLineEnable(boolean show) {
+        this.mItemSelectLineEnable = show;
+    }
+
+    public void setItemCyclicEnable(boolean wrapSelectorWheel) {
+        mItemCyclicEnable = wrapSelectorWheel;
+    }
+
+    public boolean isItemCyclicEnable() {
+        return mItemCyclicEnable;
+    }
+
+    public int getScrollState() {
+        return mScrollState;
+    }
+
+    public void setDisplayedValues(String[] displayedValues) {
+        mItemsDrawContents = displayedValues;
+        initializeSelectorWheelIndices();
+    }
+
+    public void setOnValueChangeFinishListener(OnValueChangeFinishListener listener) {
+        this.changeFinishListener = listener;
+    }
+
+    public void setOnValueChangedListener(OnValueChangeListener onValueChangedListener) {
+        mOnValueChangeListener = onValueChangedListener;
+    }
+
+    public void setOnScrollListener(OnScrollListener onScrollListener) {
+        mOnScrollListener = onScrollListener;
+    }
+
 }

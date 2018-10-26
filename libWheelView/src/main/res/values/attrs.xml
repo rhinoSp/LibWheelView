@@ -13,7 +13,6 @@
     <attr name="item_select_line_length_scale" format="float" />
     <attr name="item_select_line_width" format="dimension" />
     <attr name="item_select_line_color" format="color" />
-    <attr name="item_line_length_scale" format="float" />
     <attr name="item_cyclic_enable" format="boolean" />
     <attr name="item_visible_count" format="integer" />
 
