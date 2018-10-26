@@ -40,7 +40,8 @@
         app:item_text_color="#ff000000"
         app:item_text_size="20sp"
         app:item_visible_count="5"
-        app:orientation="vertical" />
+        app:orientation="vertical"
+        app:label="年"/>
 
     <Button
         android:id="@+id/change"

@@ -47,6 +47,7 @@ public class WheelView extends View {
     private static final int DEFAULT_MIN_VALUE = 1;
     private static final int DEFAULT_MAX_VALUE = 10;
     private static final int DEFAULT_VALUE = 1;
+    private static final String DEFAULT_LABEL = "";
     private int mItemVerticalHeight;
     private float mItemMinAlpha;
     private int mItemTextSize;
@@ -60,6 +61,7 @@ public class WheelView extends View {
     private int mMinValue;
     private int mMaxValue;
     private int mValue;
+    private String mLabel;
 
     private int mViewWidth;
     private int mViewHeight;
@@ -298,6 +300,7 @@ public class WheelView extends View {
             mMinValue = a.getInt(R.styleable.WheelView_min_value, DEFAULT_MIN_VALUE);
             mMaxValue = a.getInt(R.styleable.WheelView_max_value, DEFAULT_MAX_VALUE);
             mValue = a.getInt(R.styleable.WheelView_value, DEFAULT_VALUE);
+            mLabel = a.getString(R.styleable.WheelView_label);
             a.recycle();
         }
 
@@ -465,6 +468,16 @@ public class WheelView extends View {
                 mPaint.setAlpha(alpha);
                 canvas.drawText(txt, x, baseline, mPaint);
             }
+        }
+        if (!TextUtils.isEmpty(mLabel)) {
+            mPaint.setAlpha(255);
+            mPaint.setTextSize(mItemTextSize);
+            ItemRect ir = mItemPostions[mItemVisibleCount/2];
+            float x = ir.getRealX() + 80;
+            float y = mWheelEnableScrollOffset ? ir.getDrawY(offset) : (offset + ir.getRealY());
+            FontMetricsInt fontMetrics = mPaint.getFontMetricsInt();
+            int baseline = (int) (y - (fontMetrics.bottom + fontMetrics.top) / 2);
+            canvas.drawText(mLabel, x, baseline, mPaint);
         }
         if (mItemSelectLineEnable) {
             mPaint.setColor(mItemSelectLineColor);
@@ -1011,11 +1024,15 @@ public class WheelView extends View {
             if (mItemVisibleCount > displayedValues.length) {
                 setItemVisibleCount(displayedValues.length);
             }
-            setMinValue(0);
+            setMinValue(1);
             setMaxValue(displayedValues.length-1);
             initViewSize(mViewWidth, mViewHeight);
         }
         initializeSelectorWheelIndices();
+    }
+
+    public void setLabel(String label) {
+        mLabel = label;
     }
 
     public void setOnValueChangeFinishListener(OnValueChangeFinishListener listener) {
