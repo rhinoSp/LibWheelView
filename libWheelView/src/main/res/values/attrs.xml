@@ -15,6 +15,9 @@
     <attr name="item_select_line_color" format="color" />
     <attr name="item_cyclic_enable" format="boolean" />
     <attr name="item_visible_count" format="integer" />
+    <attr name="min_value" format="integer" />
+    <attr name="max_value" format="integer" />
+    <attr name="value" format="integer" />
 
     <declare-styleable name="WheelView">
         <attr name="orientation" />
@@ -28,6 +31,9 @@
         <attr name="item_select_line_color" />
         <attr name="item_cyclic_enable" />
         <attr name="item_visible_count" />
+        <attr name="min_value" />
+        <attr name="max_value" />
+        <attr name="value" />
     </declare-styleable>
 
 </resources>

@@ -44,6 +44,9 @@ public class WheelView extends View {
     private static final boolean DEFAULT_ITEM_CYCLIC_ENABLE = true;
     private static final boolean DEFAULT_ITEM_SELECT_LINE_ENABLE = true;
     private static final int DEFAULT_ITEM_VISIBLE_COUNT = 7;
+    private static final int DEFAULT_MIN_VALUE = 1;
+    private static final int DEFAULT_MAX_VALUE = 10;
+    private static final int DEFAULT_VALUE = 1;
     private int mItemVerticalHeight;
     private float mItemMinAlpha;
     private int mItemTextSize;
@@ -54,6 +57,9 @@ public class WheelView extends View {
     private boolean mItemCyclicEnable;
     private boolean mItemSelectLineEnable;
     private int mItemVisibleCount;
+    private int mMinValue;
+    private int mMaxValue;
+    private int mValue;
 
     private int mViewWidth;
     private int mViewHeight;
@@ -68,10 +74,6 @@ public class WheelView extends View {
     private ItemRect[] mItemPostions;
     private final SparseArray<String> mSelectorIndexToStringCache = new SparseArray<String>();
     private String[] mItemsDrawContents;
-
-    private int mMinValue = 0;
-    private int mMaxValue = 10;
-    private int mValue;
 
     private float mLastDownEventX;
     private float mLastDownOrMoveEventX;
@@ -293,6 +295,9 @@ public class WheelView extends View {
             mItemCyclicEnable = a.getBoolean(R.styleable.WheelView_item_cyclic_enable, DEFAULT_ITEM_CYCLIC_ENABLE);
             mItemSelectLineEnable = a.getBoolean(R.styleable.WheelView_item_select_line_enable, DEFAULT_ITEM_SELECT_LINE_ENABLE);
             mItemVisibleCount = a.getInt(R.styleable.WheelView_item_visible_count, DEFAULT_ITEM_VISIBLE_COUNT);
+            mMinValue = a.getInt(R.styleable.WheelView_min_value, DEFAULT_MIN_VALUE);
+            mMaxValue = a.getInt(R.styleable.WheelView_max_value, DEFAULT_MAX_VALUE);
+            mValue = a.getInt(R.styleable.WheelView_value, DEFAULT_VALUE);
             a.recycle();
         }
 
@@ -900,6 +905,10 @@ public class WheelView extends View {
         invalidate();
     }
 
+    public int getMinValue() {
+        return mMinValue;
+    }
+
     public void setMaxValue(int maxValue) {
         if (mMaxValue == maxValue) {
             return;
@@ -913,6 +922,10 @@ public class WheelView extends View {
         }
         initializeSelectorWheelIndices();
         invalidate();
+    }
+
+    public int getMaxValue() {
+        return mMaxValue;
     }
 
     public void setValue(int value) {
