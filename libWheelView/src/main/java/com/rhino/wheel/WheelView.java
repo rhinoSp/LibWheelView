@@ -767,19 +767,19 @@ public class WheelView extends View {
 
         @Override
         public float getFac(int offset) {
-            float fac = getFac_(offset);
+            float fac = getFac1(offset);
             fac = 0.6f + 0.4f * fac * fac;
             return fac;
         }
 
         @Override
         public float getItemMinAlpha(int offset) {
-            float fac = getFac_(offset);
+            float fac = getFac1(offset);
             fac = mItemMinAlpha + (1 - mItemMinAlpha) * fac * fac;
             return fac;
         }
 
-        private float getFac_(int offset) {
+        private float getFac1(int offset) {
             float fac;
             int cy = mItemCenterCoorY + offset - mOffsetTotalHeight;
             int halfHeight = mTotalHeight / 2;
@@ -788,7 +788,6 @@ public class WheelView extends View {
             } else {
                 fac = cy / (mTotalHeight * 0.5f);
             }
-
             return fac;
         }
     }
