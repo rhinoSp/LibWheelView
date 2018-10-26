@@ -924,30 +924,52 @@ public class WheelView extends View {
         return mValue;
     }
 
-    public void setOrientation(int orientation) {
-        this.mOrientation = orientation;
+    public void setOrientation(int mOrientation) {
+        this.mOrientation = mOrientation;
+    }
+
+    public void setItemVerticalHeight(int mItemVerticalHeight) {
+        this.mItemVerticalHeight = mItemVerticalHeight;
+        initViewSize(mViewWidth, mViewHeight);
+    }
+
+    public void setItemMinAlpha(float mItemMinAlpha) {
+        this.mItemMinAlpha = mItemMinAlpha;
+    }
+
+    public void setItemTextSize(int mItemTextSize) {
+        this.mItemTextSize = mItemTextSize;
+    }
+
+    public void setItemTextColor(int mItemTextColor) {
+        this.mItemTextColor = mItemTextColor;
+    }
+
+    public void setItemSelectLineLengthScale(float mItemSelectLineLengthScale) {
+        this.mItemSelectLineLengthScale = mItemSelectLineLengthScale;
+        initViewSize(mViewWidth, mViewHeight);
+    }
+
+    public void setItemSelectLineWidth(int mItemSelectLineWidth) {
+        this.mItemSelectLineWidth = mItemSelectLineWidth;
+        if (mPaint != null) {
+            mPaint.setStrokeWidth(mItemSelectLineWidth);
+        }
+    }
+
+    public void setItemSelectLineColor(int mItemSelectLineColor) {
+        this.mItemSelectLineColor = mItemSelectLineColor;
     }
 
     public void setEnableItemOffset(boolean itemScale) {
         mWheelEnableScrollOffset = itemScale;
     }
 
-    public void setItemTextSize(int textSize) {
-        this.mItemTextSize = textSize;
-    }
-
-    public void setItemTextColor(int color) {
-        this.mItemTextColor = color;
-    }
-
-    public void setItemMinAlpha(float alpha) {
-        this.mItemMinAlpha = alpha;
-    }
-
     public void setItemVisibleCount(int count) {
         mItemVisibleCount = (count <= 2 ? DEFAULT_ITEM_VISIBLE_COUNT : count);
         mItemPostions = new ItemRect[mItemVisibleCount];
         mSelectorIndices = new int[mItemVisibleCount];
+        initViewSize(mViewWidth, mViewHeight);
     }
 
     public int getItemVisibleCount() {
@@ -960,6 +982,7 @@ public class WheelView extends View {
 
     public void setItemCyclicEnable(boolean wrapSelectorWheel) {
         mItemCyclicEnable = wrapSelectorWheel;
+        initializeSelectorWheelIndices();
     }
 
     public boolean isItemCyclicEnable() {

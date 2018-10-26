@@ -93,10 +93,14 @@ public class MainActivity extends AppCompatActivity {
         int id = view.getId();
         switch (id) {
             case R.id.change:
+                mWheelView1.setItemCyclicEnable(false);
+                mWheelView1.invalidate();
+
                 String[] displayedValues2 = new String[]{
                         "5分", "10分", "30分", "1小时", "2小时"
                 };
                 mWheelView2.setDisplayedValues(displayedValues2);
+                mWheelView2.setItemVerticalHeight(60);
                 mWheelView2.invalidate();
                 break;
             default:
