@@ -30,6 +30,8 @@
         android:layout_height="200dp"
         android:layout_marginTop="20dp"
         android:background="#1a000000"
+        app:min_value="11112000"
+        app:max_value="11112100"
         app:item_cyclic_enable="false"
         app:item_vertical_height="40dp"
         app:item_min_alpha_value="0.1"

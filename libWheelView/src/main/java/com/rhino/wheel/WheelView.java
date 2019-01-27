@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.FontMetricsInt;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.text.TextUtils;
@@ -47,7 +48,6 @@ public class WheelView extends View {
     private static final int DEFAULT_MIN_VALUE = 1;
     private static final int DEFAULT_MAX_VALUE = 10;
     private static final int DEFAULT_VALUE = 1;
-    private static final String DEFAULT_LABEL = "";
     private int mItemVerticalHeight;
     private float mItemMinAlpha;
     private int mItemTextSize;
@@ -367,11 +367,12 @@ public class WheelView extends View {
             itemRect.updateCenterCoorX(halfItemViewWidth);
             mItemPostions[i] = itemRect;
         }
-
         if (null != mItemsDrawContents) {
-            String maxWidthString = getMaxWidthString(mItemsDrawContents);
+            String labelWidthString = TextUtils.isEmpty(mLabel) ? "" : mLabel + mLabel + " ";
+            String maxWidthString = getMaxWidthString(mItemsDrawContents) + labelWidthString;
             float fac = mItemPostions[mItemVisibleCount / 2].getFac(0);
             int txtMeasureSize = measureTextSize((int) (fac * mViewWidth), maxWidthString);
+//            int txtMeasureSize = measureTextSize(mViewWidth, maxWidthString);
             if (txtMeasureSize < mItemTextSize) {
                 mItemTextSize = txtMeasureSize;
             }
@@ -392,7 +393,6 @@ public class WheelView extends View {
             itemRect.updateCenterCoorX(halfItemViewWidth + mSelectorElementSize * i);
             mItemPostions[i] = itemRect;
         }
-
         if (null != mItemsDrawContents) {
             String maxWidthString = getMaxWidthString(mItemsDrawContents);
             float fac = mItemPostions[mItemVisibleCount / 2].getFac(0);
@@ -472,9 +472,10 @@ public class WheelView extends View {
         if (!TextUtils.isEmpty(mLabel)) {
             mPaint.setAlpha(255);
             mPaint.setTextSize(mItemTextSize);
-            ItemRect ir = mItemPostions[mItemVisibleCount/2];
-            float x = ir.getRealX() + 80;
-            float y = mWheelEnableScrollOffset ? ir.getDrawY(offset) : (offset + ir.getRealY());
+            ItemRect ir = mItemPostions[mItemVisibleCount / 2];
+            String maxWidthString = getMaxWidthString(mItemsDrawContents);
+            float x = ir.getRealX() + mPaint.measureText(maxWidthString)/2 + mPaint.measureText(" " + mLabel)/2;
+            float y = mViewHeight / 2;
             FontMetricsInt fontMetrics = mPaint.getFontMetricsInt();
             int baseline = (int) (y - (fontMetrics.bottom + fontMetrics.top) / 2);
             canvas.drawText(mLabel, x, baseline, mPaint);
@@ -487,8 +488,21 @@ public class WheelView extends View {
         }
     }
 
+    private void checkInitItemsDrawContents() {
+        int size = mMaxValue - mMinValue + 1;
+        if (mItemsDrawContents == null || mItemsDrawContents.length != size) {
+            mItemsDrawContents = new String[size];
+            for (int value = mMinValue; value <= mMaxValue; value++) {
+                mItemsDrawContents[value - mMinValue] = String.valueOf(value);
+            }
+        }
+    }
+
     @NonNull
-    private String getMaxWidthString(String[] arrs) {
+    private String getMaxWidthString(String... arrs) {
+        if (arrs == null) {
+            return "";
+        }
         String txt;
         Paint paint = new Paint();
         paint.setTextSize(10);
@@ -673,6 +687,7 @@ public class WheelView extends View {
     }
 
     private void initializeSelectorWheelIndices() {
+        checkInitItemsDrawContents();
         mSelectorIndexToStringCache.clear();
         int[] selectorIndices = mSelectorIndices;
         int current = getValue();
@@ -1025,7 +1040,7 @@ public class WheelView extends View {
                 setItemVisibleCount(displayedValues.length);
             }
             setMinValue(1);
-            setMaxValue(displayedValues.length-1);
+            setMaxValue(displayedValues.length - 1);
             initViewSize(mViewWidth, mViewHeight);
         }
         initializeSelectorWheelIndices();

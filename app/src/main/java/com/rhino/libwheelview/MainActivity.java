@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 "晴晴晴晴晴晴晴", "阴", "多云", "小雨", "中雨", "大雨", "暴雨", "冻雨", "大雨", "暴雨", "冻雨", "大雨", "暴雨", "冻雨", "大雨", "暴雨", "冻雨"
         };
         mWheelView2 = findViewById(R.id.WheelView2);
-        mWheelView2.setDisplayedValues(displayedValues2);
+//        mWheelView2.setDisplayedValues(displayedValues2);
         mWheelView2.setOnValueChangedListener(new WheelView.OnValueChangeListener() {
             @Override
             public void onValueChange(WheelView picker, int oldVal, int newVal) {
