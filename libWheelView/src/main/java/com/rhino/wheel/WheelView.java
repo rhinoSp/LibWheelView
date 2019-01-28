@@ -322,6 +322,7 @@ public class WheelView extends View {
         mItemPostions = new ItemRect[mItemVisibleCount];
 
         mItemSelectLineRect = new Rect();
+        checkInitItemsDrawContents();
     }
 
     private void initViewSize(int width, int height) {
@@ -495,6 +496,7 @@ public class WheelView extends View {
             for (int value = mMinValue; value <= mMaxValue; value++) {
                 mItemsDrawContents[value - mMinValue] = String.valueOf(value);
             }
+            refreshWhenSetDisplayedValues();
         }
     }
 
@@ -687,7 +689,6 @@ public class WheelView extends View {
     }
 
     private void initializeSelectorWheelIndices() {
-        checkInitItemsDrawContents();
         mSelectorIndexToStringCache.clear();
         int[] selectorIndices = mSelectorIndices;
         int current = getValue();
@@ -918,7 +919,7 @@ public class WheelView extends View {
         void onScrollStateChange(WheelView view, int scrollState);
     }
 
-    public void setMinValue(int minValue) {
+    private void changeMinValue(int minValue) {
         if (mMinValue == minValue) {
             return;
         }
@@ -929,6 +930,11 @@ public class WheelView extends View {
         if (mMinValue > mValue) {
             mValue = mMinValue;
         }
+    }
+
+    public void setMinValue(int minValue) {
+        changeMinValue(minValue);
+        checkInitItemsDrawContents();
         initializeSelectorWheelIndices();
         invalidate();
     }
@@ -937,7 +943,7 @@ public class WheelView extends View {
         return mMinValue;
     }
 
-    public void setMaxValue(int maxValue) {
+    private void changeMaxValue(int maxValue) {
         if (mMaxValue == maxValue) {
             return;
         }
@@ -948,6 +954,11 @@ public class WheelView extends View {
         if (mMaxValue < mValue) {
             mValue = mMaxValue;
         }
+    }
+
+    public void setMaxValue(int maxValue) {
+        changeMaxValue(maxValue);
+        checkInitItemsDrawContents();
         initializeSelectorWheelIndices();
         invalidate();
     }
@@ -1035,12 +1046,16 @@ public class WheelView extends View {
 
     public void setDisplayedValues(String[] displayedValues) {
         mItemsDrawContents = displayedValues;
-        if (displayedValues != null) {
-            if (mItemVisibleCount > displayedValues.length) {
-                setItemVisibleCount(displayedValues.length);
+        refreshWhenSetDisplayedValues();
+    }
+
+    public void refreshWhenSetDisplayedValues(){
+        if (mItemsDrawContents != null) {
+            if (mItemVisibleCount > mItemsDrawContents.length) {
+                setItemVisibleCount(mItemsDrawContents.length);
             }
-            setMinValue(1);
-            setMaxValue(displayedValues.length - 1);
+            changeMinValue(1);
+            changeMaxValue(mItemsDrawContents.length);
             initViewSize(mViewWidth, mViewHeight);
         }
         initializeSelectorWheelIndices();
