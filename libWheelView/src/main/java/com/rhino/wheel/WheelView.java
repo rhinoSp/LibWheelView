@@ -8,7 +8,6 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.FontMetricsInt;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.text.TextUtils;
@@ -722,6 +721,12 @@ public class WheelView extends View {
         } else {
             if (mItemsDrawContents != null) {
                 int displayedValueIndex = selectorIndex - mMinValue;
+                if (displayedValueIndex >= mItemsDrawContents.length) {
+                    displayedValueIndex = mItemsDrawContents.length - 1;
+                }
+                if (displayedValueIndex < 0) {
+                    displayedValueIndex = 0;
+                }
                 scrollSelectorValue = mItemsDrawContents[displayedValueIndex];
             } else {
                 scrollSelectorValue = "" + selectorIndex;
