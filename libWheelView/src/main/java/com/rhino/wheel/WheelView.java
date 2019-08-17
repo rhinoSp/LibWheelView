@@ -38,6 +38,8 @@ public class WheelView extends View {
     private static final float DEFAULT_ITEM_MIN_ALPHA = 0.1f;
     private static final int DEFAULT_ITEM_TEXT_SIZE = 30;
     private static final int DEFAULT_ITEM_TEXT_COLOR = Color.BLACK;
+    private static final int DEFAULT_ITEM_SELECT_TEXT_COLOR = Color.BLACK;
+    private static final int DEFAULT_ITEM_LABEL_TEXT_COLOR = Color.BLACK;
     private static final float DEFAULT_ITEM_SELECT_LINE_LENGTH_SCALE = 0f;
     private static final int DEFAULT_ITEM_SELECT_LINE_WIDTH = 1;
     private static final int DEFAULT_ITEM_SELECT_LINE_COLOR = 0x66000000;
@@ -51,6 +53,8 @@ public class WheelView extends View {
     private float mItemMinAlpha;
     private int mItemTextSize;
     private int mItemTextColor;
+    private int mItemSelectTextColor;
+    private int mItemLabelTextColor;
     private float mItemSelectLineLengthScale;
     private int mItemSelectLineWidth;
     private int mItemSelectLineColor;
@@ -290,6 +294,8 @@ public class WheelView extends View {
             mItemMinAlpha = a.getFloat(R.styleable.WheelView_item_min_alpha_value, DEFAULT_ITEM_MIN_ALPHA);
             mItemTextSize = a.getDimensionPixelSize(R.styleable.WheelView_item_text_size, DEFAULT_ITEM_TEXT_SIZE);
             mItemTextColor = a.getColor(R.styleable.WheelView_item_text_color, DEFAULT_ITEM_TEXT_COLOR);
+            mItemSelectTextColor = a.getColor(R.styleable.WheelView_item_select_text_color, DEFAULT_ITEM_SELECT_TEXT_COLOR);
+            mItemLabelTextColor = a.getColor(R.styleable.WheelView_item_label_text_color, DEFAULT_ITEM_LABEL_TEXT_COLOR);
             mItemSelectLineLengthScale = a.getFloat(R.styleable.WheelView_item_select_line_length_scale, DEFAULT_ITEM_SELECT_LINE_LENGTH_SCALE);
             mItemSelectLineWidth = a.getDimensionPixelSize(R.styleable.WheelView_item_select_line_width, DEFAULT_ITEM_SELECT_LINE_WIDTH);
             mItemSelectLineColor = a.getColor(R.styleable.WheelView_item_select_line_color, DEFAULT_ITEM_SELECT_LINE_COLOR);
@@ -410,15 +416,13 @@ public class WheelView extends View {
     }
 
     private void drawHorizontal(Canvas canvas) {
-        int color = mItemTextColor;
-        int offset = mCurrentScrollOffset;
         for (int i = 0; i < mItemVisibleCount; i++) {
             mPaint.setStyle(Paint.Style.FILL);
-            mPaint.setColor(color);
+            mPaint.setColor(mItemTextColor);
             mPaint.setTextAlign(Align.CENTER);
 
             ItemRect ir = mItemPostions[i];
-            float x = ir.getDrawX(offset);
+            float x = ir.getDrawX(mCurrentScrollOffset);
             float y = ir.getRealY();
             float f = ir.getFac(mCurrentScrollOffset);
             String txt = mSelectorIndexToStringCache.get(mSelectorIndices[i]);
@@ -431,6 +435,7 @@ public class WheelView extends View {
 
             if (null != txt) {
                 mPaint.setAlpha(alpha);
+                mPaint.setColor(mValue == mSelectorIndices[i] ? mItemSelectTextColor : mItemTextColor);
                 canvas.drawText(txt, x, baseline, mPaint);
             }
         }
@@ -444,20 +449,16 @@ public class WheelView extends View {
     }
 
     private void drawVertical(Canvas canvas) {
-        int color = mItemTextColor;
-        int offset = mCurrentScrollOffset;
-
         mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setColor(color);
         mPaint.setTextAlign(Align.CENTER);
 
         for (int i = 0; i < mItemVisibleCount; i++) {
             ItemRect ir = mItemPostions[i];
             float x = ir.getRealX();
-            float y = mWheelEnableScrollOffset ? ir.getDrawY(offset) : (offset + ir.getRealY());
-            float f = ir.getFac(offset);
+            float y = mWheelEnableScrollOffset ? ir.getDrawY(mCurrentScrollOffset) : (mCurrentScrollOffset + ir.getRealY());
+            float f = ir.getFac(mCurrentScrollOffset);
             String txt = mSelectorIndexToStringCache.get(mSelectorIndices[i]);
-            int alpha = (int) (ir.getItemMinAlpha(offset) * 255);
+            int alpha = (int) (ir.getItemMinAlpha(mCurrentScrollOffset) * 255);
 
             mPaint.setTextSize(f * mItemTextSize);
 
@@ -466,11 +467,13 @@ public class WheelView extends View {
 
             if (null != txt) {
                 mPaint.setAlpha(alpha);
+                mPaint.setColor(mValue == mSelectorIndices[i] ? mItemSelectTextColor : mItemTextColor);
                 canvas.drawText(txt, x, baseline, mPaint);
             }
         }
         if (!TextUtils.isEmpty(mLabel)) {
             mPaint.setAlpha(255);
+            mPaint.setColor(mItemLabelTextColor);
             mPaint.setTextSize(mItemTextSize);
             ItemRect ir = mItemPostions[mItemVisibleCount / 2];
             String maxWidthString = getMaxWidthString(mItemsDrawContents);

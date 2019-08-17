@@ -32,6 +32,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
 
-//    implementation project(path: ':libWheelView')
-    implementation(name: 'libWheelView-release-v1.0.3', ext: 'aar')
+    implementation project(path: ':libWheelView')
+//    implementation(name: 'libWheelView-v1.0.4', ext: 'aar')
 }

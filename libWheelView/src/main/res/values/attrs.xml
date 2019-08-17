@@ -9,6 +9,8 @@
     <attr name="item_min_alpha_value" format="float" />
     <attr name="item_text_size" format="dimension" />
     <attr name="item_text_color" format="color" />
+    <attr name="item_select_text_color" format="color" />
+    <attr name="item_label_text_color" format="color" />
     <attr name="item_select_line_enable" format="boolean" />
     <attr name="item_select_line_length_scale" format="float" />
     <attr name="item_select_line_width" format="dimension" />
@@ -26,6 +28,8 @@
         <attr name="item_min_alpha_value" />
         <attr name="item_text_size" />
         <attr name="item_text_color" />
+        <attr name="item_select_text_color" />
+        <attr name="item_label_text_color" />
         <attr name="item_select_line_enable" />
         <attr name="item_select_line_length_scale" />
         <attr name="item_select_line_width" />

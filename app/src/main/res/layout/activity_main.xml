@@ -20,9 +20,10 @@
         app:item_select_line_length_scale="0.3"
         app:item_select_line_width="0.5dp"
         app:item_text_color="#ff000000"
+        app:item_select_text_color="#ffffff00"
         app:item_text_size="40sp"
         app:item_visible_count="7"
-        app:orientation="horizontal" />
+        app:orientation="horizontal"/>
 
     <com.rhino.wheel.WheelView
         android:id="@+id/WheelView2"
@@ -40,6 +41,8 @@
         app:item_select_line_length_scale="0.8"
         app:item_select_line_width="0.5dp"
         app:item_text_color="#ff000000"
+        app:item_select_text_color="#ffff0000"
+        app:item_label_text_color="#ffff0000"
         app:item_text_size="20sp"
         app:item_visible_count="5"
         app:orientation="vertical"
