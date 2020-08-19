@@ -1,37 +1,48 @@
 apply plugin: 'com.android.application'
+apply from: "pkg.gradle"
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion rootProject.android.compileSdkVersion
     defaultConfig {
-        applicationId "com.rhino.libwheelview"
-        minSdkVersion 15
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion rootProject.android.minSdkVersion
+        targetSdkVersion rootProject.android.targetSdkVersion
+        versionCode apkVersionCode
+        versionName apkVersionName
+        applicationId "com.rhino.wheel.demo"
+		
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    signingConfigs {
+        keystore {
+            storeFile file(signKeystorePath)
+            storePassword signKsPass
+            keyAlias signKeyAlias
+            keyPassword signKeyPass
+        }
     }
     buildTypes {
         release {
+            signingConfig signingConfigs.keystore
+            //混淆
             minifyEnabled false
+            //对齐操作，使得我们的程序在Android系统中运行得更快
+            zipAlignEnabled true
+            //移除无用的resource文件 必须和minifyEnabled一起使用
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-    repositories {
-        flatDir {
-            dirs 'libs'
+        debug {
+            minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.keystore
         }
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-
+    api rootProject.ext.dependencies["appcompat-v7"]
 
     implementation project(path: ':libWheelView')
-//    implementation(name: 'libWheelView-v1.0.4', ext: 'aar')
+//    implementation(name: 'com.rhino.wheel-libWheelView-v1.0.5', ext: 'aar')
 }
