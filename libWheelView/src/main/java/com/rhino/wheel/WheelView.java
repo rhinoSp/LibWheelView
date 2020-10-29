@@ -42,7 +42,7 @@ public class WheelView extends View {
     private static final int DEFAULT_ITEM_LABEL_TEXT_COLOR = Color.BLACK;
     private static final float DEFAULT_ITEM_SELECT_LINE_LENGTH_SCALE = 0f;
     private static final int DEFAULT_ITEM_SELECT_LINE_WIDTH = 1;
-    private static final int DEFAULT_ITEM_SELECT_LINE_COLOR = 0x66000000;
+    private static final int DEFAULT_ITEM_SELECT_LINE_COLOR = 0x55000000;
     private static final boolean DEFAULT_ITEM_CYCLIC_ENABLE = true;
     private static final boolean DEFAULT_ITEM_SELECT_LINE_ENABLE = true;
     private static final int DEFAULT_ITEM_VISIBLE_COUNT = 7;
