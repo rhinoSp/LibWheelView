@@ -1,9 +1,10 @@
 package com.rhino.wheel.demo;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.rhino.wheel.WheelView;
 
@@ -50,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
 
 
         String[] displayedValues2 = new String[]{

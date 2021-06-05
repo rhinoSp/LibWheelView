@@ -8,7 +8,6 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.FontMetricsInt;
 import android.graphics.Rect;
-import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -20,6 +19,8 @@ import android.view.ViewConfiguration;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.OverScroller;
+
+import androidx.annotation.NonNull;
 
 
 /**
@@ -477,7 +478,7 @@ public class WheelView extends View {
             mPaint.setTextSize(mItemTextSize);
             ItemRect ir = mItemPostions[mItemVisibleCount / 2];
             String maxWidthString = getMaxWidthString(mItemsDrawContents);
-            float x = ir.getRealX() + mPaint.measureText(maxWidthString)/2 + mPaint.measureText(" " + mLabel)/2;
+            float x = ir.getRealX() + mPaint.measureText(maxWidthString) / 2 + mPaint.measureText(" " + mLabel) / 2;
             float y = mViewHeight / 2;
             FontMetricsInt fontMetrics = mPaint.getFontMetricsInt();
             int baseline = (int) (y - (fontMetrics.bottom + fontMetrics.top) / 2);
@@ -1057,7 +1058,7 @@ public class WheelView extends View {
         refreshWhenSetDisplayedValues();
     }
 
-    public void refreshWhenSetDisplayedValues(){
+    public void refreshWhenSetDisplayedValues() {
         if (mItemsDrawContents != null) {
             if (mItemVisibleCount > mItemsDrawContents.length) {
                 setItemVisibleCount(mItemsDrawContents.length);
